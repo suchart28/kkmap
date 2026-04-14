@@ -1,9 +1,9 @@
 // ==========================================
-// 1. กำหนด Base Maps (แผนที่พื้นฐานแบบ Dark Mode เสถียร)
+// 1. กำหนด Base Maps (แผนที่พื้นฐาน)
 // ==========================================
-const darkMap = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', {
+const standardMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
-    attribution: '© OpenStreetMap contributors © CARTO'
+    attribution: '© OpenStreetMap contributors'
 });
 
 const satelliteMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
@@ -23,20 +23,20 @@ const trafficLayer = L.tileLayer(`https://api.tomtom.com/traffic/map/4/tile/flow
 });
 
 // ==========================================
-// 3. เริ่มต้นแผนที่ 
-// (เอา preferCanvas ออก เพื่อป้องกันบั๊กการแสดงผลเส้นทับซ้อน)
+// 3. เริ่มต้นแผนที่ (ใช้ Canvas เพื่อความลื่นไหลบนมือถือ)
 // ==========================================
 const map = L.map('map', {
     center: [16.426, 102.831],
     zoom: 15,
-    layers: [darkMap] // ใช้ Dark Mode เป็นค่าเริ่มต้น
+    layers: [standardMap],
+    preferCanvas: true 
 });
 
 // ==========================================
 // 4. สร้างตัวควบคุม Layer (กางออกตลอดเวลา)
 // ==========================================
 const baseMaps = {
-    "🌑 แผนที่โหมดมืด": darkMap,
+    "🗺️ แผนที่เส้นทางจราจร": standardMap,
     "🛰️ ภาพถ่ายดาวเทียม": satelliteMap
 };
 
@@ -50,7 +50,7 @@ L.control.layers(baseMaps, overlayMaps, {
 }).addTo(map);
 
 // ==========================================
-// 5. ปุ่มค้นหาพิกัด
+// 5. ปุ่มค้นหาพิกัด (เปลี่ยนเป็น Icon สากล)
 // ==========================================
 const locateControl = L.control({ position: 'topright' });
 
@@ -114,11 +114,12 @@ const normalRoadOptions = {
     opacity: 0.9
 };
 
+// ฟังก์ชันสำหรับวาดเส้นทางเดินรถปกติ
 function addNormalRoad(coords, title) {
     L.polyline(coords, normalRoadOptions).addTo(map).bindPopup(title);
 }
 
-// พิกัดถนนเส้นปกติ
+// ⚠️ ใส่พิกัดของถนนเส้นปกติที่คุณต้องการที่นี่ (ด้านล่างนี้เป็นพิกัดตัวอย่าง)
 addNormalRoad([[16.430468870878887, 102.8355642121243],[16.429697546492847, 102.84134507354537]], "ถนนเดินรถปกติ 2 ทาง");
 addNormalRoad([[16.430717671233467, 102.83396274032296],[16.434248231523974, 102.834305570534]], "ถนนเดินรถปกติ 2 ทาง");
 addNormalRoad([[16.430553257495006, 102.83552351883705],[16.434023246824353, 102.83601971999757]], "ถนนเดินรถปกติ 2 ทาง");
@@ -126,6 +127,7 @@ addNormalRoad([[16.420818963375638, 102.82401718976625],[16.41565223039998, 102.
 addNormalRoad([[16.419130693898822, 102.82366821387994],[16.417311421587623, 102.83251399395469]], "ถนนเดินรถปกติ 2 ทาง");
 addNormalRoad([[16.415594012802817, 102.82260611338499],[16.41341084428344, 102.83233191960782]], "ถนนเดินรถปกติ 2 ทาง");
 addNormalRoad([[16.413352626008358, 102.83390989779195],[16.406599200908335, 102.83313608169622]], "ถนนเดินรถปกติ 2 ทาง");
+
 
 // ==========================================
 // 9. ระบบติดตามพิกัด GPS แบบ Real-time
@@ -146,7 +148,7 @@ function findMyLocation(e) {
             maximumAge: 1000            
         });
         isTracking = true;
-        btn.innerHTML = '🔄'; 
+        btn.innerHTML = '🔄'; // เปลี่ยนเป็น Icon กำลังโหลด
         btn.style.color = '#2196F3';
     } else {
         map.stopLocate();
@@ -168,6 +170,7 @@ map.on('locationfound', function(e) {
     userMarker = L.marker(e.latlng, {icon: userIcon}).addTo(map);
     userCircle = L.circle(e.latlng, e.accuracy, { color: '#2196F3', fillOpacity: 0.1 }).addTo(map);
     
+    // หากกำลังติดตามอยู่ ปรับ Icon ให้เป็นสีฟ้าเพื่อบอกสถานะ Active
     if (isTracking) {
         const btn = document.querySelector('.locate-button');
         btn.innerHTML = '🎯';
