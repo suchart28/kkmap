@@ -36,12 +36,12 @@ const map = L.map('map', {
 // 4. สร้างตัวควบคุม Layer (กางออกตลอดเวลา)
 // ==========================================
 const baseMaps = {
-    "🗺️ แผนที่ปกติ": standardMap,
+    "🗺️ แผนที่เส้นทางจราจร": standardMap,
     "🛰️ ภาพถ่ายดาวเทียม": satelliteMap
 };
 
 const overlayMaps = {
-    "🚥 สภาพจราจร (TomTom)": trafficLayer
+    "🚥 สภาพจราจรตอนนี้": trafficLayer
 };
 
 L.control.layers(baseMaps, overlayMaps, { 
