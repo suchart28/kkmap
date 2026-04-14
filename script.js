@@ -1,10 +1,10 @@
 // 1. กำหนดจุดศูนย์กลางแผนที่
 const map = L.map('map').setView([16.426, 102.831], 15);
 
-// 2. Tile Layer
+// 2. Tile Layer (ใช้โทนมาตรฐานเพื่อให้เส้นสีบานเย็นเด่นขึ้น)
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
-    attribution: '© OpenStreetMap contributors | สงกรานต์ขอนแก่น'
+    attribution: '© OpenStreetMap contributors'
 }).addTo(map);
 
 // ==========================================
@@ -17,46 +17,30 @@ const closedRoadCoords = [
 
 L.polyline(closedRoadCoords, {
     color: '#E60000',
-    weight: 6, // ปรับลดความหนาลงเล็กน้อยให้ดูสะอาดตา
+    weight: 7,
     opacity: 0.9
 }).addTo(map).bindPopup("<b>ถนนข้าวเหนียว</b><br>🚫 ปิดการจราจร");
 
 // ==========================================
-// 4. ถนนเดินรถทางเดียว (One Way) + Animation + หัวลูกศร
+// 4. ถนนเดินรถทางเดียว (One Way) - ปรับปรุงใหม่
 // ==========================================
 
 const antPathOptions = {
-    "delay": 600,
-    "dashArray": [5, 15], // ปรับให้ถี่ขึ้น (เส้นสั้น 5, ช่องว่าง 15)
-    "weight": 4,          // ปรับให้เส้นบางลงตามคำขอ
-    "color": "#FFFFFF",
-    "pulseColor": "#8CC63F",
+    "delay": 3000,          // ปรับให้ช้าลงมาก (ยิ่งค่ามากยิ่งช้า)
+    "dashArray": [2, 15],   // ปรับรอยปะให้ถี่ขึ้น (เส้นสั้น 2, ช่องว่าง 15)
+    "weight": 5,            // ความหนาของเส้นให้ดูเด่น
+    "color": "#4A001F",     // สีพื้นหลังเส้น (ม่วงเข้มมืด)
+    "pulseColor": "#FF007F", // สีชมพูบานเย็น (เด่นมาก)
     "paused": false,
     "reverse": false
 };
 
-// ฟังก์ชันช่วยวาดเส้นพร้อมหัวลูกศร
+// ฟังก์ชันวาดเส้น Ant Path เพียงเส้นเดียว
 function addOneWayRoad(coords, title) {
-    // วาดเส้นเคลื่อนไหว
-    const path = L.polyline.antPath(coords, antPathOptions).addTo(map).bindPopup(title);
-    
-    // เพิ่มหัวลูกศรกำกับทิศทาง (ไม่เคลื่อนไหวแต่ช่วยยืนยันหัวลูกศร)
-    L.polylineDecorator(path, {
-        patterns: [
-            {
-                offset: '10%', // จุดเริ่มต้นลูกศรแรก
-                repeat: '100px', // ระยะห่างระหว่างลูกศร
-                symbol: L.Symbol.arrowHead({
-                    pixelSize: 10,
-                    polygon: false,
-                    pathOptions: { stroke: true, color: '#4d8a00', weight: 2 }
-                })
-            }
-        ]
-    }).addTo(map);
+    L.polyline.antPath(coords, antPathOptions).addTo(map).bindPopup(title);
 }
 
-// อัปเดตเส้นทางตามพิกัดที่คุณให้มา
+// อัปเดตเส้นทางตามพิกัด
 addOneWayRoad([
     [16.430630117959158, 102.83393084954284], 
     [16.413435340521765, 102.83230136209767]
@@ -88,7 +72,7 @@ addOneWayRoad([
 ], "จุดเชื่อมต่อถนนหน้าเมือง");
 
 // ==========================================
-// 5. กล่องสัญลักษณ์ (Legend)
+// 5. กล่องสัญลักษณ์ (Legend) - อัปเดตสี
 // ==========================================
 const legend = L.control({position: 'bottomright'});
 legend.onAdd = function (map) {
@@ -96,7 +80,10 @@ legend.onAdd = function (map) {
     div.innerHTML = `
         <h4 style="margin: 0 0 10px 0; text-align: center;">สัญลักษณ์</h4>
         <div class="legend-item"><span class="color-box red-line"></span> ห้ามผ่าน (ปิดถนน)</div>
-        <div class="legend-item"><span class="color-box green-dashed"></span> One Way (ตามทิศลูกศร)</div>
+        <div class="legend-item">
+            <span class="color-box" style="background: #FF007F; height: 6px;"></span> 
+            เดินรถทางเดียว (ตามทิศการวิ่ง)
+        </div>
     `;
     return div;
 };
