@@ -1,9 +1,9 @@
 // ==========================================
-// 1. กำหนด Base Maps (แผนที่พื้นฐาน)
+// 1. กำหนด Base Maps (แผนที่พื้นฐาน - เปลี่ยนเป็น Dark Mode)
 // ==========================================
-const standardMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+const darkMap = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
     maxZoom: 19,
-    attribution: '© OpenStreetMap contributors'
+    attribution: '© OpenStreetMap contributors © CARTO'
 });
 
 const satelliteMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
@@ -28,7 +28,7 @@ const trafficLayer = L.tileLayer(`https://api.tomtom.com/traffic/map/4/tile/flow
 const map = L.map('map', {
     center: [16.426, 102.831],
     zoom: 15,
-    layers: [standardMap],
+    layers: [darkMap], // ตั้งค่าเริ่มต้นให้เป็น Dark Mode
     preferCanvas: true 
 });
 
@@ -36,7 +36,7 @@ const map = L.map('map', {
 // 4. สร้างตัวควบคุม Layer (กางออกตลอดเวลา)
 // ==========================================
 const baseMaps = {
-    "🗺️ แผนที่เส้นทางจราจร": standardMap,
+    "🌑 แผนที่โหมดมืด (Dark Mode)": darkMap, // อัปเดตชื่อในเมนู
     "🛰️ ภาพถ่ายดาวเทียม": satelliteMap
 };
 
@@ -119,7 +119,7 @@ function addNormalRoad(coords, title) {
     L.polyline(coords, normalRoadOptions).addTo(map).bindPopup(title);
 }
 
-// ⚠️ ใส่พิกัดของถนนเส้นปกติที่คุณต้องการที่นี่ (ด้านล่างนี้เป็นพิกัดตัวอย่าง)
+// ใส่พิกัดของถนนเส้นปกติ
 addNormalRoad([[16.430468870878887, 102.8355642121243],[16.429697546492847, 102.84134507354537]], "ถนนเดินรถปกติ 2 ทาง");
 addNormalRoad([[16.430717671233467, 102.83396274032296],[16.434248231523974, 102.834305570534]], "ถนนเดินรถปกติ 2 ทาง");
 addNormalRoad([[16.430553257495006, 102.83552351883705],[16.434023246824353, 102.83601971999757]], "ถนนเดินรถปกติ 2 ทาง");
