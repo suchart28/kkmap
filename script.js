@@ -1,9 +1,9 @@
 // ==========================================
 // 1. กำหนด Base Maps (แผนที่พื้นฐาน)
 // ==========================================
-const standardMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+const darkMap = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
     maxZoom: 19,
-    attribution: '© OpenStreetMap contributors'
+    attribution: '© OpenStreetMap contributors © CARTO'
 });
 
 const satelliteMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
@@ -28,7 +28,7 @@ const trafficLayer = L.tileLayer(`https://api.tomtom.com/traffic/map/4/tile/flow
 const map = L.map('map', {
     center: [16.426, 102.831],
     zoom: 15,
-    layers: [standardMap],
+    layers: [darkMap], // ตั้งเป็น Dark Mode
     preferCanvas: true 
 });
 
