@@ -1,0 +1,65 @@
+/* ตั้งค่าพื้นฐานไม่ให้มีขอบขาวรอบๆ เว็บ */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Sarabun', Tahoma, sans-serif;
+}
+
+/* ให้แผนที่เต็มจอ 100% */
+#map {
+    width: 100vw;
+    height: 100vh;
+}
+
+/* ตกแต่งกล่องคำอธิบายสัญลักษณ์ (Legend) */
+.info.legend {
+    background: white;
+    padding: 10px 15px;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    line-height: 24px;
+    color: #333;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+/* กล่องสีสัญลักษณ์ */
+.color-box {
+    width: 20px;
+    height: 4px;
+    margin-right: 10px;
+    display: inline-block;
+}
+
+.red-line { 
+    background-color: #E60000; 
+    height: 6px; 
+}
+
+.green-dashed { 
+    background: repeating-linear-gradient(90deg, #8CC63F, #8CC63F 10px, transparent 10px, transparent 20px); 
+    height: 6px; 
+}
+
+/* ปุ่มหาพิกัดปัจจุบัน (Geolocation) */
+.locate-button {
+    background-color: white;
+    padding: 10px;
+    cursor: pointer;
+    border: 2px solid rgba(0,0,0,0.2);
+    border-radius: 4px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: black;
+}
+
+.locate-button:hover {
+    background-color: #f4f4f4;
+}
