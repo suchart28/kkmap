@@ -23,13 +23,13 @@ const trafficLayer = L.tileLayer(`https://api.tomtom.com/traffic/map/4/tile/flow
 });
 
 // ==========================================
-// 3. เริ่มต้นแผนที่ (เพิ่ม preferCanvas เพื่อให้มือถือโหลดเส้นและ Animation ได้ลื่นไหลขึ้น)
+// 3. เริ่มต้นแผนที่ (ใช้ Canvas เพื่อความลื่นไหลบนมือถือ)
 // ==========================================
 const map = L.map('map', {
     center: [16.426, 102.831],
     zoom: 15,
     layers: [standardMap],
-    preferCanvas: true // ✨ บังคับให้ใช้ Canvas วาดกราฟิก ช่วยลดอาการกระตุกบนมือถือ
+    preferCanvas: true 
 });
 
 // ==========================================
@@ -50,16 +50,17 @@ L.control.layers(baseMaps, overlayMaps, {
 }).addTo(map);
 
 // ==========================================
-// 5. ปุ่มค้นหาพิกัด (ย้ายมา TopRight ให้อยู่ใต้ Layer)
+// 5. ปุ่มค้นหาพิกัด (เปลี่ยนเป็น Icon สากล)
 // ==========================================
 const locateControl = L.control({ position: 'topright' });
 
 locateControl.onAdd = function (map) {
     const div = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
-    // ปรับรูปแบบปุ่มให้เป็นข้อความยาวขึ้น กดง่ายบนมือถือ
     div.innerHTML = `
-        <a href="#" class="locate-button" style="display: block; padding: 8px 12px; background: #fff; color: #333; text-decoration: none; font-weight: bold; border-radius: 4px;" title="หาตำแหน่งของฉัน" onclick="findMyLocation(event)">
-            📍 พิกัดของฉัน
+        <a href="#" class="locate-button" 
+           style="display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; background: #fff; color: #333; text-decoration: none; font-size: 20px; border-radius: 4px;" 
+           title="หาตำแหน่งของฉัน" onclick="findMyLocation(event)">
+            🎯
         </a>`;
     return div;
 };
@@ -80,7 +81,7 @@ L.polyline(closedRoadCoords, {
 }).addTo(map).bindPopup("<b>ถนนข้าวเหนียว</b><br>🚫 ปิดการจราจร");
 
 // ==========================================
-// 7. ถนนเดินรถทางเดียว (One Way) - สีน้ำเงินสว่าง/ขาว
+// 7. ถนนเดินรถทางเดียว (One Way) - น้ำเงินสว่าง/ขาว (วิ่งช้า)
 // ==========================================
 const antPathOptions = {
     "delay": 3000,          
@@ -104,51 +105,30 @@ addOneWayRoad([[16.41339039536673, 102.83232797139702], [16.413393379252348, 102
 addOneWayRoad([[16.43040440588915, 102.83555893562193], [16.43064366518606, 102.83390937467006]], "จุดเชื่อมต่อถนนหน้าเมือง");
 
 // ==========================================
-// 8. กล่องสัญลักษณ์ (Legend)
-// ==========================================
-const legend = L.control({position: 'bottomright'});
-legend.onAdd = function (map) {
-    const div = L.DomUtil.create('div', 'info legend');
-    div.innerHTML = `
-        <h4 style="margin: 0 0 10px 0; text-align: center;">สัญลักษณ์</h4>
-        <div class="legend-item"><span class="color-box red-line"></span> ห้ามผ่าน (ปิดถนน)</div>
-        <div class="legend-item">
-            <span class="color-box" style="background: #00B0FF; border: 1px solid #ccc; height: 6px;"></span> 
-            เดินรถทางเดียว (น้ำเงินสว่าง)
-        </div>
-    `;
-    return div;
-};
-legend.addTo(map);
-
-// ==========================================
-// 9. ระบบติดตามพิกัด GPS แบบ Real-time (ปรับจูนสำหรับมือถือ)
+// 8. ระบบติดตามพิกัด GPS แบบ Real-time
 // ==========================================
 let userMarker, userCircle;
-let isTracking = false; // ตัวแปรเช็คสถานะการติดตาม
+let isTracking = false;
 
 function findMyLocation(e) {
     if (e) e.preventDefault();
-    
     const btn = document.querySelector('.locate-button');
 
     if (!isTracking) {
-        // ✨ เปิดโหมดติดตามต่อเนื่อง (Watch) และใช้ GPS แม่นยำสูง
         map.locate({ 
             setView: true, 
             maxZoom: 16, 
-            watch: true,                // ดึงพิกัดต่อเนื่องเมื่อผู้ใช้ขยับ
-            enableHighAccuracy: true,   // บังคับใช้ฮาร์ดแวร์ GPS แทนเสาสัญญาณ (แม่นยำขึ้นมาก)
-            maximumAge: 2000            // อัปเดตข้อมูลใหม่ตลอด (ยอมให้ใช้ข้อมูลเก่าไม่เกิน 2 วินาที)
+            watch: true,                
+            enableHighAccuracy: true,   
+            maximumAge: 1000            
         });
         isTracking = true;
-        btn.innerHTML = '🔄 กำลังติดตาม...';
+        btn.innerHTML = '🔄'; // เปลี่ยนเป็น Icon กำลังโหลด
         btn.style.color = '#2196F3';
     } else {
-        // กดซ้ำเพื่อหยุดการติดตาม ช่วยประหยัดแบตเตอรี่มือถือ
         map.stopLocate();
         isTracking = false;
-        btn.innerHTML = '📍 พิกัดของฉัน';
+        btn.innerHTML = '🎯';
         btn.style.color = '#333';
     }
 }
@@ -164,11 +144,17 @@ map.on('locationfound', function(e) {
     
     userMarker = L.marker(e.latlng, {icon: userIcon}).addTo(map);
     userCircle = L.circle(e.latlng, e.accuracy, { color: '#2196F3', fillOpacity: 0.1 }).addTo(map);
+    
+    // หากกำลังติดตามอยู่ ปรับ Icon ให้เป็นสีฟ้าเพื่อบอกสถานะ Active
+    if (isTracking) {
+        const btn = document.querySelector('.locate-button');
+        btn.innerHTML = '🎯';
+        btn.style.color = '#2196F3';
+    }
 });
 
 map.on('locationerror', function(e) {
-    alert("ไม่สามารถเข้าถึงพิกัด GPS ได้ กรุณาเปิด Location (GPS) ในเครื่องของคุณ");
+    alert("ไม่สามารถเข้าถึงพิกัด GPS ได้");
     isTracking = false;
-    document.querySelector('.locate-button').innerHTML = '📍 พิกัดของฉัน';
-    document.querySelector('.locate-button').style.color = '#333';
+    document.querySelector('.locate-button').innerHTML = '🎯';
 });
