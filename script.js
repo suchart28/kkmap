@@ -84,9 +84,9 @@ L.polyline(closedRoadCoords, {
 // 7. ถนนเดินรถทางเดียว (One Way) - น้ำเงินสว่าง/ขาว (วิ่งช้า)
 // ==========================================
 const antPathOptions = {
-    "delay": 1000,          
+    "delay": 2000,          
     "dashArray": [2, 15],   
-    "weight": 3,            
+    "weight": 5,            
     "color": "#FFFFFF",     
     "pulseColor": "#E60000", 
     "paused": false,
