@@ -84,10 +84,10 @@ L.polyline(closedRoadCoords, {
 // 7. ถนนเดินรถทางเดียว (One Way)
 // ==========================================
 const antPathOptions = {
-    "delay": 2000,          
+    "delay": 2500,          
     "dashArray": [2, 15],   
     "weight": 5,            
-    "color": "#FFFFFF",     
+    "color": "#fcf003",     
     "pulseColor": "#E60000", 
     "paused": false,
     "reverse": false
