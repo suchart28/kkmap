@@ -15,7 +15,7 @@ const satelliteMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/se
 // 2. กำหนด Overlay Maps (ชั้นข้อมูลทับซ้อน)
 // ==========================================
 // ❗ แทนที่คำว่า "YOUR_TOMTOM_API_KEY" ด้วย Key ที่ได้จากเว็บ TomTom
-const tomtomApiKey = 'YOUR_TOMTOM_API_KEY'; 
+const tomtomApiKey = '8oHwI99AzpDA013yabYCuqOfZ4ffAW6t'; 
 
 const trafficLayer = L.tileLayer(`https://api.tomtom.com/traffic/map/4/tile/flow/relative0/{z}/{x}/{y}.png?key=${tomtomApiKey}`, {
     maxZoom: 19,
